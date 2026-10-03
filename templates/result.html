@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Assessment Result - Swiggy Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="brand">
+            <div class="logo-box">⚡</div>
+            <div>
+                <h1>Swiggy Intelligence Studio</h1>
+                <span class="subtitle">Live Model Assessment Result</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="/" class="btn btn-secondary">← Back to ML Studio</a>
+        </div>
+    </header>
+
+    <div class="main-container" style="max-width: 650px; margin-top: 40px;">
+        <div class="card result-card">
+            <div class="result-header">
+                <span class="badge {% if 'High' in risk_level %}badge-red{% elif 'Medium' in risk_level %}badge-orange{% else %}badge-green{% endif %}">
+                    {{ risk_level }}
+                </span>
+                <h2>Customer Churn Probability</h2>
+            </div>
+
+            <div class="metric-meter mt-3">
+                <div class="meter-score">{{ probability }}%</div>
+                <div class="meter-bar-bg">
+                    <div class="meter-bar-fill" style="width: {{ probability }}%; background: {% if 'High' in risk_level %}#e63946{% elif 'Medium' in risk_level %}#f77f00{% else %}#2a9d8f{% endif %};"></div>
+                </div>
+            </div>
+
+            <div class="prescription-box mt-4">
+                <h4>📋 Prescriptive Action Strategy</h4>
+                <div class="prescription-content" style="white-space: pre-line;">
+                    {{ recommended_action }}
+                </div>
+            </div>
+
+            <div class="form-actions mt-4">
+                <a href="/" class="btn btn-primary btn-lg" style="text-align: center; text-decoration: none;">
+                    ← Return to Intelligence Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

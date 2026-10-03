@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiggy Analytics & Machine Learning Suite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+        <div class="brand">
+            <div class="logo-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="#FFFFFF"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Swiggy Intelligence Studio</h1>
+                <span class="subtitle">End-to-End Analytics & Machine Learning Platform</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiOTNiNjg4MTQtY2VmOC00YmNiLTk3YmYtODYzN2ViN2YxMDM4IiwidCI6ImY5YTQzODQwLWY3OGUtNDE3Yy05ZDgwLTg5NTJhMmJhN2Y0YiJ9" target="_blank" class="btn btn-secondary">
+                📊 Power BI Dashboard
+            </a>
+            <a href="/docs" target="_blank" class="btn btn-primary">
+                ⚡ FastAPI Swagger Docs
+            </a>
+        </div>
+    </header>
+
+    <!-- KPI Metric Cards Bar -->
+    <section class="kpi-banner">
+        <div class="kpi-card">
+            <span class="kpi-label">TOTAL REVENUE</span>
+            <span class="kpi-value">₹963.8M</span>
+            <span class="kpi-sub">Across 148,575 Orders</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">AVG ORDER VALUE</span>
+            <span class="kpi-value">₹6,487</span>
+            <span class="kpi-sub">High-Basket Demand</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">BASELINE CHURN</span>
+            <span class="kpi-value alert-text">87.76%</span>
+            <span class="kpi-sub">1–2 Order Drop-off</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">PARETO DISTRIBUTION</span>
+            <span class="kpi-value highlight-text">80 / 20</span>
+            <span class="kpi-sub">12.4K Users Drive 80% Rev</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">DEPLOYED ML</span>
+            <span class="kpi-value">5 Engines</span>
+            <span class="kpi-sub">FastAPI Powered Microservice</span>
+        </div>
+    </section>
+
+    <!-- Main Workspace Container -->
+    <main class="main-container">
+        
+        <!-- Navigation Tabs -->
+        <nav class="tabs-nav" role="tablist">
+            <button class="tab-btn active" onclick="switchTab('churn', this)">
+                <span class="tab-icon">🔴</span> Churn Risk Predictor
+            </button>
+            <button class="tab-btn" onclick="switchTab('cltv', this)">
+                <span class="tab-icon">💎</span> CLTV Regressor
+            </button>
+            <button class="tab-btn" onclick="switchTab('segmentation', this)">
+                <span class="tab-icon">👥</span> Customer Personas (K-Means)
+            </button>
+            <button class="tab-btn" onclick="switchTab('recommender', this)">
+                <span class="tab-icon">🍽️</span> Food & Restaurant Recommender
+            </button>
+            <button class="tab-btn" onclick="switchTab('forecast', this)">
+                <span class="tab-icon">📈</span> City Demand Forecaster
+            </button>
+        </nav>
+
+        <!-- ========================================== -->
+        <!-- TAB 1: CHURN PREDICTION -->
+        <!-- ========================================== -->
+        <section id="tab-churn" class="tab-pane active">
+            <div class="section-intro">
+                <h2>Customer Churn Risk Prediction (Random Forest)</h2>
+                <p>Predict whether a customer is at risk of churning (90-day inactivity threshold) and receive prescriptive retention strategies.</p>
+            </div>
+
+            <div class="split-layout">
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h3>Customer Transaction Inputs</h3>
+                        <div class="presets">
+                            <span class="preset-label">Presets:</span>
+                            <button type="button" class="preset-btn" onclick="fillChurn(1, 450, 450, 22, 1)">At-Risk One-Timer</button>
+                            <button type="button" class="preset-btn" onclick="fillChurn(8, 52000, 6500, 31, 0)">Loyal High-Spender</button>
+                        </div>
+                    </div>
+
+                    <form id="churn-form" action="/predict" method="post">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="c_orders">Total Orders Placed</label>
+                                <input type="number" id="c_orders" name="total_orders" value="2" min="1" step="1" required>
+                                <span class="input-hint">Lifetime order count</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="c_rev">Total Revenue Spent (₹)</label>
+                                <input type="number" id="c_rev" name="total_revenue" value="2400" min="0" step="1" required>
+                                <span class="input-hint">Cumulative monetary spend</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="c_aov">Average Order Value (₹)</label>
+                                <input type="number" id="c_aov" name="avg_order_value" value="1200" min="0" step="1" required>
+                                <span class="input-hint">Total Revenue / Total Orders</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="c_age">User Age</label>
+                                <input type="number" id="c_age" name="age" value="26" min="12" max="100" required>
+                                <span class="input-hint">Customer age in years</span>
+                            </div>
+                            <div class="input-group full-width">
+                                <label for="c_gender">Gender</label>
+                                <select id="c_gender" name="gender" required>
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="predictChurnAsync()">
+                                🚀 Run Live Churn Prediction
+                            </button>
+                            <button type="submit" class="btn btn-outline">
+                                Submit via Classic Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Churn Result Panel -->
+                <div class="card result-card" id="churn-result-box">
+                    <div class="empty-state" id="churn-placeholder">
+                        <div class="empty-icon">🎯</div>
+                        <h3>Prediction Results Will Appear Here</h3>
+                        <p>Adjust the customer parameters on the left and click <strong>Run Live Churn Prediction</strong> to assess risk.</p>
+                    </div>
+
+                    <div id="churn-live-content" style="display: none;">
+                        <div class="result-header">
+                            <span class="badge" id="churn-risk-badge">Risk Level</span>
+                            <h3 id="churn-title">Churn Probability Assessment</h3>
+                        </div>
+
+                        <div class="metric-meter">
+                            <div class="meter-score" id="churn-prob-display">0%</div>
+                            <div class="meter-bar-bg">
+                                <div class="meter-bar-fill" id="churn-bar-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="prescription-box">
+                            <h4>📋 Prescriptive Retention Action Plan</h4>
+                            <div id="churn-action-text" class="prescription-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: CLTV REGRESSION -->
+        <!-- ========================================== -->
+        <section id="tab-cltv" class="tab-pane">
+            <div class="section-intro">
+                <h2>Customer Lifetime Value (CLTV) Prediction</h2>
+                <p>Estimate the future total monetary value of a customer based on early purchasing habits and allocate maximum Customer Acquisition Cost (CAC).</p>
+            </div>
+
+            <div class="split-layout">
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h3>User Early Activity Signals</h3>
+                    </div>
+
+                    <form id="cltv-form">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="cltv_orders">Early Order Count</label>
+                                <input type="number" id="cltv_orders" value="4" min="1" step="1" required>
+                                <span class="input-hint">Completed orders so far</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="cltv_aov">Average Order Value (₹)</label>
+                                <input type="number" id="cltv_aov" value="2800" min="50" step="50" required>
+                                <span class="input-hint">Average basket size</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="cltv_recency">Days Since Last Order (Recency)</label>
+                                <input type="number" id="cltv_recency" value="12" min="0" step="1" required>
+                                <span class="input-hint">Recent activity days</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="cltv_age">Customer Age</label>
+                                <input type="number" id="cltv_age" value="28" min="15" max="90" required>
+                            </div>
+                            <div class="input-group full-width">
+                                <label for="cltv_gender">Gender</label>
+                                <select id="cltv_gender">
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-lg" onclick="predictCLTVAsync()">
+                            💎 Predict Projected Lifetime Value
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card result-card" id="cltv-result-box">
+                    <div class="empty-state" id="cltv-placeholder">
+                        <div class="empty-icon">💰</div>
+                        <h3>Projected Revenue & Segment Tier</h3>
+                        <p>Calculate future monetary yield to optimize marketing acquisition and retention budgets.</p>
+                    </div>
+
+                    <div id="cltv-live-content" style="display: none;">
+                        <span class="badge badge-purple" id="cltv-tier-badge">Tier</span>
+                        <div class="stat-highlight">
+                            <span class="stat-big" id="cltv-amount-display">₹0</span>
+                            <span class="stat-sub">Projected Lifetime Spend</span>
+                        </div>
+
+                        <div class="prescription-box mt-3">
+                            <h4>🎯 Budget & Acquisition Strategy</h4>
+                            <p id="cltv-strategy-text" class="prescription-content"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: CUSTOMER SEGMENTATION (K-MEANS) -->
+        <!-- ========================================== -->
+        <section id="tab-segmentation" class="tab-pane">
+            <div class="section-intro">
+                <h2>Unsupervised Customer Persona Clustering (K-Means)</h2>
+                <p>Dynamically classify users into 4 distinct behavioral cohorts using RFM (Recency, Frequency, Monetary) analytics.</p>
+            </div>
+
+            <div class="split-layout">
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h3>Customer RFM Metrics</h3>
+                    </div>
+
+                    <form id="segment-form">
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <label for="seg_recency">Recency (Days Inactive)</label>
+                                <input type="number" id="seg_recency" value="15" min="0" step="1" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="seg_orders">Frequency (Total Orders)</label>
+                                <input type="number" id="seg_orders" value="5" min="1" step="1" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="seg_rev">Monetary (Total Spent ₹)</label>
+                                <input type="number" id="seg_rev" value="28500" min="0" step="100" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="seg_aov">Average Order Value (₹)</label>
+                                <input type="number" id="seg_aov" value="5700" min="0" step="50" required>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-lg" onclick="segmentCustomerAsync()">
+                            👥 Assign Customer Persona Cluster
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card result-card" id="segment-result-box">
+                    <div class="empty-state" id="segment-placeholder">
+                        <div class="empty-icon">👥</div>
+                        <h3>Customer Persona Identity</h3>
+                        <p>Analyze how this customer compares against Champions, Loyal Regulars, Casuals, and At-Risk groups.</p>
+                    </div>
+
+                    <div id="segment-live-content" style="display: none;">
+                        <span class="badge badge-gold" id="seg-badge">Persona</span>
+                        <h3 id="seg-name" style="margin-top: 10px;">Persona Title</h3>
+                        <p id="seg-desc" class="text-muted"></p>
+
+                        <div class="prescription-box mt-3">
+                            <h4>🚀 Campaign & Engagement Playbook</h4>
+                            <p id="seg-strategy" class="prescription-content"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: RECOMMENDER SYSTEM -->
+        <!-- ========================================== -->
+        <section id="tab-recommender" class="tab-pane">
+            <div class="section-intro">
+                <h2>Smart Food & Restaurant Recommendation Engine</h2>
+                <p>Hybrid popularity and cuisine matching algorithm to recommend top dining options and signature dishes.</p>
+            </div>
+
+            <div class="filter-bar card">
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="rec_city">Select City</label>
+                        <select id="rec_city">
+                            {% for c in cities %}
+                            <option value="{{ c }}" {% if c == "Tirupati" %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="rec_cuisine">Preferred Cuisine</label>
+                        <select id="rec_cuisine">
+                            <option value="">All Cuisines</option>
+                            {% for cu in cuisines %}
+                            <option value="{{ cu }}">{{ cu }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group button-group">
+                        <button type="button" class="btn btn-primary" onclick="fetchRecommendations()">
+                            🍽️ Generate Recommendations
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="recommender-results-grid" class="cards-grid mt-4">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 5: DEMAND FORECASTING -->
+        <!-- ========================================== -->
+        <section id="tab-forecast" class="tab-pane">
+            <div class="section-intro">
+                <h2>City Demand & Revenue Time Series Forecasting</h2>
+                <p>Project upcoming monthly order volumes and sales trends across top operating cities to optimize delivery capacity.</p>
+            </div>
+
+            <div class="filter-bar card">
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="fc_city">Target City for Projection</label>
+                        <select id="fc_city">
+                            {% for tc in top_cities %}
+                            <option value="{{ tc }}" {% if tc == "Tirupati" %}selected{% endif %}>{{ tc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group button-group">
+                        <button type="button" class="btn btn-primary" onclick="fetchForecast()">
+                            📈 Generate 3-Month Forecast
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="forecast-card-area" class="card mt-4" style="display: none;">
+                <div class="forecast-summary-bar">
+                    <div>
+                        <span class="kpi-label">CITY</span>
+                        <h3 id="fc-city-name">-</h3>
+                    </div>
+                    <div>
+                        <span class="kpi-label">HISTORICAL MONTHLY AVG ORDERS</span>
+                        <h3 id="fc-hist-orders">-</h3>
+                    </div>
+                    <div>
+                        <span class="kpi-label">HISTORICAL MONTHLY AVG REVENUE</span>
+                        <h3 id="fc-hist-rev">-</h3>
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-2">Projected Order Demand & Revenue</h3>
+                <div class="table-container">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Timeline</th>
+                                <th>Projected Orders</th>
+                                <th>Estimated Gross Revenue</th>
+                                <th>Logistics Recommendation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="forecast-table-body">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        <p>Swiggy End-to-End Data Analytics & Machine Learning Platform • Powered by <strong>FastAPI</strong> & <strong>Scikit-Learn</strong></p>
+    </footer>
+
+    <script>
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+
+            if (tabId === 'recommender') {
+                fetchRecommendations();
+            } else if (tabId === 'forecast') {
+                fetchForecast();
+            }
+        }
+
+        function fillChurn(orders, rev, aov, age, gender) {
+            document.getElementById('c_orders').value = orders;
+            document.getElementById('c_rev').value = rev;
+            document.getElementById('c_aov').value = aov;
+            document.getElementById('c_age').value = age;
+            document.getElementById('c_gender').value = gender;
+        }
+
+        async function predictChurnAsync() {
+            const payload = {
+                total_orders: parseFloat(document.getElementById('c_orders').value),
+                total_revenue: parseFloat(document.getElementById('c_rev').value),
+                avg_order_value: parseFloat(document.getElementById('c_aov').value),
+                age: parseFloat(document.getElementById('c_age').value),
+                gender: parseInt(document.getElementById('c_gender').value)
+            };
+
+            try {
+                const res = await fetch('/api/churn/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                document.getElementById('churn-placeholder').style.display = 'none';
+                document.getElementById('churn-live-content').style.display = 'block';
+
+                const prob = data.churn_probability;
+                document.getElementById('churn-prob-display').innerText = prob + '%';
+                
+                const fillBar = document.getElementById('churn-bar-fill');
+                fillBar.style.width = prob + '%';
+
+                const badge = document.getElementById('churn-risk-badge');
+                if (prob >= 70) {
+                    badge.className = 'badge badge-red';
+                    fillBar.style.background = '#e63946';
+                } else if (prob >= 40) {
+                    badge.className = 'badge badge-orange';
+                    fillBar.style.background = '#f77f00';
+                } else {
+                    badge.className = 'badge badge-green';
+                    fillBar.style.background = '#2a9d8f';
+                }
+                badge.innerText = data.risk_level;
+
+                document.getElementById('churn-action-text').innerText = data.recommended_action;
+            } catch (err) {
+                alert('Error making churn prediction: ' + err);
+            }
+        }
+
+        async function predictCLTVAsync() {
+            const payload = {
+                total_orders: parseFloat(document.getElementById('cltv_orders').value),
+                avg_order_value: parseFloat(document.getElementById('cltv_aov').value),
+                recency_days: parseFloat(document.getElementById('cltv_recency').value),
+                age: parseFloat(document.getElementById('cltv_age').value),
+                gender: parseInt(document.getElementById('cltv_gender').value)
+            };
+
+            try {
+                const res = await fetch('/api/cltv/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                document.getElementById('cltv-placeholder').style.display = 'none';
+                document.getElementById('cltv-live-content').style.display = 'block';
+
+                document.getElementById('cltv-amount-display').innerText = '₹' + data.predicted_cltv.toLocaleString();
+                document.getElementById('cltv-tier-badge').innerText = data.cltv_tier;
+                document.getElementById('cltv-strategy-text').innerText = data.marketing_budget_recommendation;
+            } catch (err) {
+                alert('Error calculating CLTV: ' + err);
+            }
+        }
+
+        async function segmentCustomerAsync() {
+            const payload = {
+                recency_days: parseFloat(document.getElementById('seg_recency').value),
+                total_orders: parseFloat(document.getElementById('seg_orders').value),
+                total_revenue: parseFloat(document.getElementById('seg_rev').value),
+                avg_order_value: parseFloat(document.getElementById('seg_aov').value)
+            };
+
+            try {
+                const res = await fetch('/api/segment/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                document.getElementById('segment-placeholder').style.display = 'none';
+                document.getElementById('segment-live-content').style.display = 'block';
+
+                document.getElementById('seg-badge').innerText = data.badge;
+                document.getElementById('seg-name').innerText = data.persona_name;
+                document.getElementById('seg-desc').innerText = data.description;
+                document.getElementById('seg-strategy').innerText = data.recommended_strategy;
+            } catch (err) {
+                alert('Error calculating segment: ' + err);
+            }
+        }
+
+        async function fetchRecommendations() {
+            const city = document.getElementById('rec_city').value;
+            const cuisine = document.getElementById('rec_cuisine').value;
+            const grid = document.getElementById('recommender-results-grid');
+
+            grid.innerHTML = '<div class="loading-spinner">Searching best matching restaurants...</div>';
+
+            try {
+                const res = await fetch('/api/recommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city: city, cuisine: cuisine || null, limit: 6 })
+                });
+                const data = await res.json();
+
+                if (!data.recommendations || data.recommendations.length === 0) {
+                    grid.innerHTML = '<div class="card p-4">No direct matches found. Try selecting "All Cuisines".</div>';
+                    return;
+                }
+
+                let html = '';
+                data.recommendations.forEach(r => {
+                    html += `
+                        <div class="restaurant-card card">
+                            <div class="rest-top">
+                                <h3>${r.name}</h3>
+                                <span class="rating-pill">⭐ ${r.rating}</span>
+                            </div>
+                            <div class="rest-meta">
+                                <span>📍 ${r.city}</span> • <span>🍴 ${r.cuisine}</span> • <span class="text-muted">${r.rating_count}</span>
+                            </div>
+                            <div class="dish-chips">
+                                <span class="chip-title">Signature Dishes:</span>
+                                ${r.recommended_dishes.map(d => `<span class="dish-chip">${d}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                grid.innerHTML = html;
+            } catch (err) {
+                grid.innerHTML = '<div class="card p-4">Failed to load recommendations.</div>';
+            }
+        }
+
+        async function fetchForecast() {
+            const city = document.getElementById('fc_city').value;
+            const area = document.getElementById('forecast-card-area');
+            const tbody = document.getElementById('forecast-table-body');
+
+            try {
+                const res = await fetch('/api/forecast/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city: city })
+                });
+                const data = await res.json();
+
+                area.style.display = 'block';
+                document.getElementById('fc-city-name').innerText = data.city;
+                document.getElementById('fc-hist-orders').innerText = data.historical_avg_monthly_orders.toLocaleString() + ' orders';
+                document.getElementById('fc-hist-rev').innerText = '₹' + data.historical_avg_monthly_revenue.toLocaleString();
+
+                let rows = '';
+                data.projections.forEach(p => {
+                    rows += `
+                        <tr>
+                            <td><strong>${p.month_offset}</strong></td>
+                            <td><span class="badge badge-purple">${p.forecasted_orders.toLocaleString()} Orders</span></td>
+                            <td><strong>₹${p.forecasted_revenue.toLocaleString()}</strong></td>
+                            <td>${p.forecasted_orders > data.historical_avg_monthly_orders ? '🚀 Prepare additional delivery fleet and weekend cloud kitchen stock.' : 'Maintain steady inventory and launch mid-week push notification promos.'}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = rows;
+            } catch (err) {
+                alert('Error loading demand forecast: ' + err);
+            }
+        }
+
+        // Initialize with default churn prediction trigger on load
+        window.addEventListener('DOMContentLoaded', () => {
+            predictChurnAsync();
+        });
+    </script>
+</body>
+</html>
