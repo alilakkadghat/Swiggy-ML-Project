@@ -6,7 +6,7 @@ from typing import Optional, List
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Form, Query, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
@@ -83,6 +83,11 @@ os.makedirs("static", exist_ok=True)
 os.makedirs("templates", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/swiggy.svg", media_type="image/svg+xml")
+
 
 
 # -------------------------------------------------------------
