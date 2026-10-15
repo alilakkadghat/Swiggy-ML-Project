@@ -1,0 +1,26 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Run every 14 minutes to keep the Render free tier from sleeping (sleeps after 15 min of inactivity)
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions UI
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render App
+        env:
+          APP_URL: ${{ secrets.RENDER_APP_URL || 'https://swiggy-ml-project.onrender.com' || 'https://swiggy.imalibtw.in' }}
+        run: |
+          echo "Sending keep-alive ping to ${APP_URL} at $(date -u)..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -m 30 "${APP_URL}/api/stats" || true)
+          echo "Response code from /api/stats: ${HTTP_STATUS}"
+          
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Waking up or pinging root endpoint..."
+            curl -s -o /dev/null -w "%{http_code}" -m 30 "${APP_URL}/" || true
+          fi
+          
+          echo "Keep-alive ping finished successfully."
