@@ -153,6 +153,124 @@ body {
     width: 100%;
 }
 
+/* Uiverse 3D Isometric Cube Buttons */
+.btn.cube {
+    --cube-color: #FC8019;
+    --cube-bg: #1A1D27;
+    position: relative;
+    display: inline-block;
+    padding: 0.85em 1.4em;
+    background: transparent;
+    outline: none;
+    border: 0;
+    color: var(--cube-color);
+    letter-spacing: 0.08em;
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 1;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    margin-top: 14px;
+    margin-right: 14px;
+    transition: all 0.5s;
+}
+
+.btn.cube.cube-gold {
+    --cube-color: #d4af37;
+}
+
+.btn.cube.cube-orange {
+    --cube-color: #FC8019;
+}
+
+.btn.cube .bg-top {
+    position: absolute;
+    height: 10px;
+    background: var(--cube-color);
+    bottom: 100%;
+    left: 5px;
+    right: -5px;
+    transform: skew(-45deg, 0);
+    margin: 0;
+    transition: all 0.4s;
+}
+
+.btn.cube .bg-top .bg-inner {
+    bottom: 0;
+}
+
+.btn.cube .bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    background: var(--cube-color);
+    transition: all 0.4s;
+}
+
+.btn.cube .bg-right {
+    position: absolute;
+    background: var(--cube-color);
+    top: -5px;
+    z-index: 0;
+    bottom: 5px;
+    width: 10px;
+    left: 100%;
+    transform: skew(0, -45deg);
+    transition: all 0.4s;
+}
+
+.btn.cube .bg-right .bg-inner {
+    left: 0;
+}
+
+.btn.cube .bg-inner {
+    background: var(--cube-bg);
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
+    transition: all 0.4s;
+}
+
+.btn.cube .text {
+    position: relative;
+    transition: all 0.4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.btn.cube:hover .bg-inner {
+    background: var(--cube-color);
+    transition: all 0.4s;
+}
+
+.btn.cube:hover .text {
+    color: var(--cube-bg);
+    transition: all 0.4s;
+}
+
+.btn.cube:hover .bg-right,
+.btn.cube:hover .bg,
+.btn.cube:hover .bg-top {
+    background: var(--cube-bg);
+    transition: all 0.4s;
+}
+
+.btn.cube:active {
+    z-index: 9999;
+    animation: bounce 0.1s linear;
+}
+
 /* ---------------------------------------------------------
    KPI Metric Banner
    --------------------------------------------------------- */
