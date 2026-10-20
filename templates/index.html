@@ -2571,7 +2571,17 @@
                 const data = await res.json();
 
                 if (!data.recommendations || data.recommendations.length === 0) {
-                    grid.innerHTML = '<div style="padding: 24px; color: var(--text-muted);">No direct matches found. Try selecting "All Cuisines".</div>';
+                    const cuisineText = cuisine ? `"${cuisine}"` : 'matching';
+                    grid.innerHTML = `
+                        <div style="padding: 36px 20px; text-align: center; color: var(--text-muted); grid-column: 1 / -1; border: 1px dashed rgba(255,255,255,0.08); border-radius: 8px;">
+                            <div style="font-size: 1rem; color: var(--text-main); font-weight: 600; margin-bottom: 6px;">
+                                No ${cuisineText} restaurants found in ${city}
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-sub);">
+                                Try selecting another cuisine category or choose "All Cuisines" to discover top-rated dining spots in this area.
+                            </div>
+                        </div>
+                    `;
                     return;
                 }
 
@@ -2620,12 +2630,15 @@
                 let rows = '';
                 data.projections.forEach(p => {
                     const isGrowth = p.forecasted_orders > data.historical_avg_monthly_orders;
+                    const strategyText = p.strategy || (isGrowth 
+                        ? 'Prepare additional delivery fleet coverage and stock weekend kitchen supplies.' 
+                        : 'Maintain lean inventory and activate mid-week promotional push notifications.');
                     rows += `
                         <tr>
                             <td><strong style="font-family: var(--font-mono);">${p.month_offset}</strong></td>
                             <td><span class="badge-editorial ${isGrowth ? 'badge-purple' : 'badge-gold'}">${p.forecasted_orders.toLocaleString()} Orders</span></td>
                             <td><strong style="font-family: var(--font-mono);">₹${p.forecasted_revenue.toLocaleString()}</strong></td>
-                            <td style="color: var(--text-sub);">${isGrowth ? 'Prepare additional delivery fleet coverage and stock weekend kitchen supplies.' : 'Maintain lean inventory and activate mid-week promotional push notifications.'}</td>
+                            <td style="color: var(--text-sub); line-height: 1.5; font-size: 0.82rem;">${strategyText}</td>
                         </tr>
                     `;
                 });

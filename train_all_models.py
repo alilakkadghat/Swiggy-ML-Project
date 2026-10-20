@@ -195,13 +195,30 @@ sample_dishes = {
 }
 
 unique_cities = sorted(rest_clean["City"].dropna().unique().tolist())
-unique_cuisines = sorted(rest_clean["Cuisine"].dropna().unique().tolist())
+for m in ["Bangalore", "Mumbai", "Delhi", "Hyderabad", "Chennai", "Kolkata", "Pune", "Tirupati"]:
+    if m not in unique_cities:
+        unique_cities.append(m)
+unique_cities = sorted(unique_cities)
+
+comprehensive_cuisines = [
+    "North Indian", "South Indian", "Chinese", "Biryani", "Fast Food",
+    "Bakery", "Italian", "Pizzas", "Burgers", "Desserts", "Ice Cream",
+    "American", "Mughlai", "Continental", "Beverages", "Snacks",
+    "Street Food", "Chaat", "Tandoor", "Asian", "Arabian", "Bengali",
+    "Punjabi", "Thalis", "Healthy Food", "Seafood", "Mexican", "Lebanese",
+    "Maharashtrian", "Andhra", "Afghani", "Barbecue", "Pastas", "Sweets", "Cafe",
+    "Thai", "Japanese", "Tibetan", "European", "Hyderabadi", "Awadhi",
+    "Juices", "Salads", "Kebabs", "Waffles", "Sandwiches", "Rolls", "Shakes",
+    "American,Bakery", "Bakery,Italian", "Biryani,North Indian"
+]
 
 joblib.dump({
     "top_restaurants": top_restaurants[["Restaurant_id", "Name", "City", "Cuisine", "Rating_num", "Rating_count"]].to_dict(orient="records"),
     "sample_dishes": sample_dishes,
-    "cities": unique_cities[:50],  # top 50 cities
-    "cuisines": unique_cuisines[:40]
+    "cities": unique_cities,
+    "all_cities": unique_cities,
+    "cuisines": comprehensive_cuisines,
+    "all_cuisines": comprehensive_cuisines
 }, "ml_assets/recommender_system.pkl")
 
 # -------------------------------------------------------------
